@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/AuthContext';
 
 const navLinks = [
   { label: 'Dashboard', href: '/dashboard' },
@@ -11,6 +12,13 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm">
@@ -20,9 +28,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl">📋</span>
-            <span className="text-xl font-bold text-indigo-600">
-              MeetNote
-            </span>
+            <span className="text-xl font-bold text-indigo-600">MeetNote</span>
           </Link>
 
           {/* Nav Links */}
@@ -42,20 +48,45 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Auth Buttons */}
+          {/* Auth Section */}
           <div className="flex items-center gap-3">
-            <Link
-              href="/auth"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
-              Login
-            </Link>
-            <Link
-              href="/auth"
-              className="text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
-            >
-              Sign Up
-            </Link>
+            {loading ? (
+              <div className="w-24 h-8 bg-gray-100 rounded-lg animate-pulse" />
+            ) : user ? (
+              <>
+                {/* User Avatar + Name */}
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                    {user.name?.[0]?.toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.name}
+                  </span>
+                </div>
+                {/* Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="text-sm font-medium text-gray-500 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth"
+                  className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/auth"
+                  className="text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
         </div>
