@@ -21,14 +21,12 @@ export default function MeetingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/auth');
     }
   }, [user, authLoading, router]);
 
-  // Fetch meeting details
   useEffect(() => {
     if (!id) return;
     fetchMeeting();
@@ -57,7 +55,6 @@ export default function MeetingDetailPage() {
         body: JSON.stringify({ status: nextStatus }),
       });
       if (!res.ok) throw new Error('Failed to update');
-      // Refresh meeting data
       await fetchMeeting();
     } catch (err) {
       console.error(err);
@@ -106,7 +103,6 @@ export default function MeetingDetailPage() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
 
-      {/* Back Button */}
       <Link
         href="/meetings"
         className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
@@ -128,7 +124,6 @@ export default function MeetingDetailPage() {
           </span>
         </div>
 
-        {/* Description */}
         {meeting.description && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
@@ -140,7 +135,6 @@ export default function MeetingDetailPage() {
           </div>
         )}
 
-        {/* Progress */}
         {totalTasks > 0 && (
           <div className="mt-6 pt-4 border-t border-gray-100">
             <div className="flex justify-between text-xs text-gray-400 mb-2">
@@ -161,8 +155,6 @@ export default function MeetingDetailPage() {
 
       {/* Tasks Section */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-gray-800">
             Tasks from this Meeting
@@ -175,7 +167,6 @@ export default function MeetingDetailPage() {
           </Link>
         </div>
 
-        {/* Tasks List */}
         {meeting.tasks?.length === 0 ? (
           <div className="text-center py-12">
             <span className="text-3xl mb-2 block">✅</span>
@@ -208,13 +199,11 @@ export default function MeetingDetailPage() {
                   key={task.id}
                   className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
-                  {/* Left — Task Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
                       {task.title}
                     </p>
                     <div className="flex items-center gap-3 mt-1">
-                      {/* Assignee */}
                       <div className="flex items-center gap-1.5">
                         <div className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">
                           {task.assignedTo?.name?.[0] || '?'}
@@ -223,7 +212,6 @@ export default function MeetingDetailPage() {
                           {task.assignedTo?.name || 'Unassigned'}
                         </span>
                       </div>
-                      {/* Deadline */}
                       {deadline && (
                         <span className={`text-xs ${isOverdue ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
                           {isOverdue ? '🚨' : '📅'} {deadline}
@@ -231,8 +219,6 @@ export default function MeetingDetailPage() {
                       )}
                     </div>
                   </div>
-
-                  {/* Right — Status Badge */}
                   <button
                     onClick={() => handleStatusChange(task.id, task.status)}
                     className="ml-4 flex-shrink-0 group flex items-center gap-1"
