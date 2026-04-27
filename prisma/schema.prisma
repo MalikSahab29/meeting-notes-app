@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -32,16 +32,16 @@ model Meeting {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
   deadline    DateTime?
-  status      String   @default("pending")
-  createdAt   DateTime @default(now())
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
 
-  assignedTo  User     @relation(fields: [userId], references: [id])
+  assignedTo  User      @relation(fields: [userId], references: [id])
   userId      Int
 
-  meeting     Meeting  @relation(fields: [meetingId], references: [id])
+  meeting     Meeting   @relation(fields: [meetingId], references: [id])
   meetingId   Int
 }
